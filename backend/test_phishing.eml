@@ -1,0 +1,21 @@
+From: security-alert@example.com
+To: user@example.com
+Subject: Urgent Account Verification Required
+Date: Fri, 25 Sep 2026 15:00:00 +0530
+Reply-To: suspicious@example.net
+Authentication-Results: spf=fail; dkim=fail
+
+URGENT SECURITY ALERT
+
+Your account has been temporarily suspended.
+
+Please verify your account immediately by clicking the link below:
+
+https://example.com/verify-account
+
+Confirm your identity and reset your password immediately.
+
+If you do not complete verification, your account may be permanently locked.
+
+Thank you,
+Security Team
