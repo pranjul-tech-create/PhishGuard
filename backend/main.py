@@ -6,7 +6,6 @@ import joblib
 import pandas as pd
 import os
 import json
-import shap
 
 from url_analyzer import extract_features
 from risk_engine import calculate_risk
@@ -43,10 +42,16 @@ create_table()
 # CORS
 # ----------------------------------------------------
 
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://phish-guard-lemon.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -66,22 +71,6 @@ except Exception as error:
     print("Error loading machine learning model:")
     print(error)
     model = None
-
-
-# ----------------------------------------------------
-# SHAP EXPLAINER
-# ----------------------------------------------------
-
-try:
-    if model is not None:
-        shap_explainer = shap.TreeExplainer(model)
-        print("SHAP explainer loaded successfully.")
-    else:
-        shap_explainer = None
-except Exception as error:
-    print("Error loading SHAP explainer:")
-    print(error)
-    shap_explainer = None
 
 
 # ----------------------------------------------------
@@ -188,75 +177,6 @@ def analyze_url(url):
         if prediction == 0
         else "LEGITIMATE"
     )
-
-    # ------------------------------------------------
-    # SHAP ML EXPLANATION
-    # ------------------------------------------------
-
-    ml_explanation = []
-
-    if shap_explainer is not None:
-        try:
-            shap_values = shap_explainer.shap_values(feature_values)
-
-            # SHAP has returned different shapes across versions.
-            # Normalize the result to one contribution per feature
-            # for the class predicted by the Random Forest.
-            if isinstance(shap_values, list):
-                class_shap_values = shap_values[prediction][0]
-            else:
-                shap_array = shap_values
-
-                if getattr(shap_array, "ndim", 0) == 3:
-                    # Common newer format: (samples, features, classes)
-                    class_shap_values = shap_array[0, :, prediction]
-                elif getattr(shap_array, "ndim", 0) == 2:
-                    class_shap_values = shap_array[0]
-                else:
-                    class_shap_values = shap_array
-
-            for feature_name, feature_value, shap_value in zip(
-                feature_order,
-                [features[feature] for feature in feature_order],
-                class_shap_values
-            ):
-                shap_value = float(shap_value)
-
-                if shap_value >= 0:
-                    direction = (
-                        "toward_phishing"
-                        if prediction == 0
-                        else "toward_legitimate"
-                    )
-                else:
-                    direction = (
-                        "away_from_phishing"
-                        if prediction == 0
-                        else "away_from_legitimate"
-                    )
-
-                ml_explanation.append({
-                    "feature": feature_name,
-                    "value": feature_value,
-                    "impact": round(shap_value, 6),
-                    "absolute_impact": round(abs(shap_value), 6),
-                    "direction": direction
-                })
-
-            # Show the most influential features first.
-            ml_explanation.sort(
-                key=lambda item: item["absolute_impact"],
-                reverse=True
-            )
-
-            # Keep the API response compact while retaining the
-            # strongest contributors for the frontend.
-            ml_explanation = ml_explanation[:8]
-
-        except Exception as error:
-            print("SHAP explanation failed:")
-            print(error)
-            ml_explanation = []
 
     # ------------------------------------------------
     # RULE-BASED RISK
@@ -366,9 +286,7 @@ def analyze_url(url):
             "reasons": final_reasons
         },
 
-        "features": features,
-
-        "ml_explanation": ml_explanation
+        "features": features
     }
 
 
