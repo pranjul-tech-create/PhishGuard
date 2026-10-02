@@ -2,87 +2,116 @@
 
 ### AI-Powered Phishing Detection & Investigation Platform
 
-PhishGuard is an AI-assisted cybersecurity platform designed to analyze suspicious URLs and email files, combine machine-learning predictions with rule-based security analysis and threat intelligence, and provide explainable investigation results through a centralized dashboard.
+<p align="center">
+  <img src="https://img.shields.io/badge/PhishGuard-AI%20Cybersecurity-0A66C2?style=for-the-badge&logo=shield&logoColor=white" alt="PhishGuard"/>
+</p>
+
+<p align="center">
+  <strong>Detect • Investigate • Explain</strong>
+</p>
+
+<p align="center">
+  <a href="https://phish-guard-lemon.vercel.app">
+    <img src="https://img.shields.io/badge/🚀%20LIVE%20DEMO-Open%20PhishGuard-00C853?style=for-the-badge" alt="Live Demo"/>
+  </a>
+  &nbsp;
+  <a href="https://github.com/pranjul-tech-create/PhishGuard">
+    <img src="https://img.shields.io/badge/💻%20SOURCE%20CODE-GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+  </a>
+</p>
 
 ---
 
-## 🚀 Key Features
+## 🚀 Live Demo
 
-- 🔎 **URL Phishing Detection**
-  - Extracts security-related URL features
-  - Uses a Random Forest machine-learning model
-  - Provides phishing/legitimate classification
-  - Displays model confidence
+### 👉 [Open PhishGuard](https://phish-guard-lemon.vercel.app)
 
-- 🧠 **Explainable AI**
-  - Uses SHAP to explain ML predictions
-  - Shows feature-level contribution toward the predicted class
+> PhishGuard is deployed as a full-stack application with a React frontend on Vercel and a FastAPI backend on Render.
 
-- 🛡️ **Rule-Based Risk Engine**
-  - Detects suspicious URL characteristics
-  - Generates a rule-based risk score
-  - Provides human-readable reasons
+<p align="center">
 
-- 🌐 **VirusTotal Threat Intelligence**
-  - Checks URLs against VirusTotal
-  - Displays malicious, suspicious, harmless and undetected results
-  - Handles unavailable or rate-limited API responses
+  <a href="https://phish-guard-lemon.vercel.app">
+    <img src="https://img.shields.io/badge/Frontend-Vercel-black?style=flat-square&logo=vercel&logoColor=white" alt="Vercel"/>
+  </a>
 
-- 📧 **Email Investigation**
-  - Supports `.eml` files
-  - Extracts sender, recipient, subject and Reply-To
-  - Analyzes suspicious keywords
-  - Extracts embedded URLs
-  - Detects attachments
-  - Reads authentication results
-  - Investigates embedded URLs using the URL analysis pipeline
+  <a href="https://phishguard-backend-90ey.onrender.com/docs">
+    <img src="https://img.shields.io/badge/API-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI"/>
+  </a>
 
-- 📊 **Investigation Dashboard**
-  - Recent investigation history
-  - Risk distribution
-  - Investigation details
-  - URL feature analysis
-  - Email evidence
-  - ML explanations
+  <a href="https://github.com/pranjul-tech-create/PhishGuard">
+    <img src="https://img.shields.io/github/stars/pranjul-tech-create/PhishGuard?style=flat-square&logo=github" alt="GitHub Stars"/>
+  </a>
 
-- 💾 **SQLite Investigation History**
-  - Stores investigation results locally
-  - Supports investigation retrieval and detailed review
+</p>
 
 ---
 
-## 🏗️ System Architecture
+# 🛡️ What is PhishGuard?
+
+**PhishGuard** is an AI-powered phishing detection and investigation platform designed to analyze:
+
+- 🔗 Suspicious URLs
+- 📧 Phishing emails
+- 🌐 Domain and URL characteristics
+- 🤖 Machine-learning predictions
+- 🧠 Explainable AI signals
+- 🛡️ Rule-based security indicators
+- 🔍 VirusTotal threat intelligence
+- 📊 Investigation history
+
+Instead of depending on a single detection technique, PhishGuard combines multiple security signals into a unified investigation workflow.
+
+---
+
+# ✨ Key Features
+
+| Feature | Description |
+|---|---|
+| 🤖 **Machine Learning** | Random Forest phishing classification |
+| 🧠 **Explainable AI** | SHAP-based feature explanations |
+| 🔗 **URL Analysis** | Extracts security-related URL features |
+| 🛡️ **Rule Engine** | Calculates deterministic risk indicators |
+| 🌐 **VirusTotal** | External threat-intelligence enrichment |
+| 📧 **Email Analysis** | `.eml` header, content and URL analysis |
+| 🔍 **URL Extraction** | Extracts URLs from suspicious emails |
+| 💾 **Investigation History** | Stores previous investigations |
+| 📊 **Dashboard** | Displays investigation statistics |
+| 🚀 **Live Deployment** | Vercel + Render |
+
+---
+
+# 🧠 Detection Architecture
 
 ```text
-                    ┌─────────────────────┐
-                    │   React Dashboard   │
-                    │      / Vite         │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │    FastAPI Backend  │
-                    └──────────┬──────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              │                │                │
-              ▼                ▼                ▼
-       URL Feature        Rule-Based       Email Analyzer
-       Extraction         Risk Engine             │
-              │                │                  │
-              ▼                │                  ▼
-       Random Forest           │          Embedded URLs
-              │                │                  │
-              └────────┬───────┘                  │
-                       ▼                          │
-                Final Assessment ◄────────────────┘
-                       │
-              ┌────────┴────────┐
-              │                 │
-              ▼                 ▼
-        VirusTotal            SHAP
-       Threat Intel       Explainability
-              │                 │
-              └────────┬────────┘
-                       ▼
-                 SQLite History
+                         ┌─────────────────────┐
+                         │   Suspicious Input  │
+                         └──────────┬──────────┘
+                                    │
+                         ┌──────────┴──────────┐
+                         │                     │
+                         ▼                     ▼
+                  🔗 Suspicious URL       📧 Email
+                         │                     │
+                         ▼                     ▼
+                  Feature Extraction     Email Analysis
+                         │                     │
+                         ▼                     ▼
+                  🤖 ML Prediction       Header Analysis
+                         │                     │
+                         ▼                     ▼
+                   🧠 SHAP Analysis      URL Extraction
+                         │                     │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                           🛡️ Rule Engine
+                                    │
+                                    ▼
+                         🌐 VirusTotal Intel
+                                    │
+                                    ▼
+                         🎯 Final Assessment
+                                    │
+                    ┌───────────────┼───────────────┐
+                    ▼               ▼               ▼
+                  🟢 LOW         🟡 MEDIUM        🔴 HIGH
